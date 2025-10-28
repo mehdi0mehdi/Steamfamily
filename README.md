@@ -348,3 +348,24 @@ For issues, questions, or feature requests, please use the GitHub Issues page or
 // Linkless reviews: client uses regex /(https?:\/\/|www\.)/i to reject URLs. Server policies also reject them.
 // Configurable badWords array in code/DB — sanitize before saving (replace with '***').
 // Tool pages must be directories with index.html so URLs are /tool/<slug>/.
+
+Deployment to GitHub Pages
+-------------------------
+
+This repository is configured to produce a `docs/` folder during the Vite build and include a `404.html` fallback so the SPA works on GitHub Pages.
+
+How to build and publish:
+
+1. Build the site (this runs Vite build, copies `docs/index.html` to `docs/404.html`, then bundles the server):
+
+```powershell
+npm run build
+```
+
+2. Commit and push the `docs/` folder to the default branch (e.g., `main` or `master`).
+
+3. In your GitHub repository settings → Pages, set the source to the `main` (or your default branch) and the folder to `/docs`.
+
+Notes:
+- The Vite config automatically sets the `base` for production to `/${pkg.name}/` where `pkg.name` is taken from `package.json`. If your GitHub repo name differs from `package.json` name, set the environment variable `VITE_BASE` or update the `base` in `vite.config.ts` manually.
+- If you prefer using the `gh-pages` branch instead, you can remove the `docs` target and use a deployment tool such as `gh-pages` (npm package) or GitHub Actions. The current approach is intentionally minimal and works well for quick publishing.
