@@ -15,9 +15,12 @@ try {
 }
 
 export default defineConfig({
-  // When building for production we set base to the repo name so paths
-  // are correct when hosting under https://<user>.github.io/<repo>/
-  base: process.env.NODE_ENV === "production" && pkgName ? `/${pkgName}/` : "/",
+  // Production base for GitHub Pages. Use VITE_BASE env var to override if needed.
+  // Set explicitly to the GitHub repo name so asset URLs are correct when
+  // hosting under https://<user>.github.io/Steamfamily/
+  base:
+    process.env.VITE_BASE ??
+    (process.env.NODE_ENV === "production" ? "/Steamfamily/" : "/"),
   plugins: [
     react(),
     runtimeErrorOverlay(),
