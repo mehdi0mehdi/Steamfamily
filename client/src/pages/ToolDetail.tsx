@@ -144,7 +144,7 @@ export default function ToolDetail() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4" data-testid="text-not-found">Tool Not Found</h1>
-          <Link href="/">
+          <Link href={`${import.meta.env.BASE_URL}`}>
             <Button variant="outline" data-testid="button-back-home">Back to Home</Button>
           </Link>
         </div>
@@ -156,7 +156,7 @@ export default function ToolDetail() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-7xl px-4 py-8">
         {/* Breadcrumb */}
-        <Link href="/">
+        <Link href={`${import.meta.env.BASE_URL}`}>
           <Button variant="ghost" size="sm" className="mb-6 gap-2" data-testid="button-back">
             <ChevronLeft className="h-4 w-4" />
             Back to Tools
@@ -231,7 +231,7 @@ export default function ToolDetail() {
                 ) : (
                   <div className="text-center py-8 border border-dashed border-border rounded-lg">
                     <p className="text-muted-foreground mb-4">Login to write a review</p>
-                    <Link href="/login">
+                    <Link href={`${import.meta.env.BASE_URL}login`}>
                       <Button data-testid="button-login-to-review">Login</Button>
                     </Link>
                   </div>

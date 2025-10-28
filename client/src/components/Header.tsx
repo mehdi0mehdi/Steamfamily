@@ -9,7 +9,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-sidebar-border bg-sidebar backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 hover-elevate active-elevate-2 px-4 py-2 rounded-md transition-all" data-testid="link-home">
+  <Link href={`${import.meta.env.BASE_URL}`} className="flex items-center gap-2 hover-elevate active-elevate-2 px-4 py-2 rounded-md transition-all" data-testid="link-home">
           <span className="text-xl font-bold">
             Steam<span className="text-primary">Family</span>
           </span>
@@ -19,7 +19,7 @@ export function Header() {
           {user ? (
             <>
               {profile?.is_admin && (
-                <Link href="/admin">
+                <Link href={`${import.meta.env.BASE_URL}admin`}>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -47,7 +47,7 @@ export function Header() {
             </>
           ) : (
             <>
-              <Link href="/login">
+              <Link href={`${import.meta.env.BASE_URL}login`}>
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -58,7 +58,7 @@ export function Header() {
                   Login
                 </Button>
               </Link>
-              <Link href="/register">
+              <Link href={`${import.meta.env.BASE_URL}register`}>
                 <Button 
                   variant="default" 
                   size="sm" 

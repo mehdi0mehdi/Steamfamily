@@ -19,7 +19,7 @@ export default function Login() {
     setLoading(true);
     try {
       await signIn(email, password);
-      setLocation('/');
+  setLocation(`${import.meta.env.BASE_URL}`);
     } catch (error) {
       console.error('Login error:', error);
     } finally {
@@ -72,7 +72,7 @@ export default function Login() {
             </Button>
             <p className="text-sm text-muted-foreground text-center">
               Don't have an account?{' '}
-              <Link href="/register" className="text-primary hover:underline">
+              <Link href={`${import.meta.env.BASE_URL}register`} className="text-primary hover:underline">
                 Register
               </Link>
             </p>

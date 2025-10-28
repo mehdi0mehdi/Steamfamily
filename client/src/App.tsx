@@ -41,17 +41,17 @@ function Router() {
               <h3 className="font-semibold mb-3">Links</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <a href="/" className="hover:text-foreground transition-colors" data-testid="link-footer-home">
+                  <a href={`${import.meta.env.BASE_URL}`} className="hover:text-foreground transition-colors" data-testid="link-footer-home">
                     Home
                   </a>
                 </li>
                 <li>
-                  <a href="/privacy" className="hover:text-foreground transition-colors" data-testid="link-footer-privacy">
+                  <a href={`${import.meta.env.BASE_URL}privacy`} className="hover:text-foreground transition-colors" data-testid="link-footer-privacy">
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="/terms" className="hover:text-foreground transition-colors" data-testid="link-footer-terms">
+                  <a href={`${import.meta.env.BASE_URL}terms`} className="hover:text-foreground transition-colors" data-testid="link-footer-terms">
                     Terms of Service
                   </a>
                 </li>
