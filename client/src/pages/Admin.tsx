@@ -23,6 +23,35 @@ export default function Admin() {
   const [editingTool, setEditingTool] = useState<Tool | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
+  // Check admin access
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle>Loading...</CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!profile.is_admin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle>Access Denied</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">You do not have permission to access the admin panel.</p>
+            <Button onClick={() => setLocation('/')}>Back to Home</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const [formData, setFormData] = useState({
     slug: '',
     title: '',
@@ -50,7 +79,7 @@ export default function Admin() {
       if (error) throw error;
       return data;
     },
-    enabled: !!profile?.isAdmin,
+    enabled: !!profile?.is_admin,
   });
 
   const saveToolMutation = useMutation({
@@ -146,14 +175,14 @@ export default function Admin() {
     setFormData({
       slug: tool.slug,
       title: tool.title,
-      shortDescription: tool.shortDescription,
-      fullDescription: tool.fullDescription,
+      shortDescription: tool.short_description,
+      fullDescription: tool.full_description,
       images: tool.images?.join(', ') || '',
       tags: tool.tags?.join(', ') || '',
-      downloadUrl: tool.downloadUrl,
-      mirrorUrl: tool.mirrorUrl || '',
-      donateUrl: tool.donateUrl || '',
-      telegramUrl: tool.telegramUrl || '',
+      downloadUrl: tool.download_url,
+      mirrorUrl: tool.mirror_url || '',
+      donateUrl: tool.donate_url || '',
+      telegramUrl: tool.telegram_url || '',
       version: tool.version,
       visible: tool.visible,
       downloads: tool.downloads,
@@ -165,24 +194,8 @@ export default function Admin() {
     saveToolMutation.mutate(formData);
   };
 
-  if (!profile?.isAdmin) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Card className="max-w-md w-full mx-4">
-          <CardContent className="pt-6 text-center">
-            <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-            <p className="text-muted-foreground mb-6">
-              You don't have permission to access the admin panel.
-            </p>
-            <Button onClick={() => setLocation('/')}>Go Home</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-7xl px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Admin Panel</h1>
@@ -397,7 +410,7 @@ export default function Admin() {
                         {!tool.visible && <Badge variant="secondary">Hidden</Badge>}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2 break-words">
-                        {tool.shortDescription}
+                        {tool.short_description}
                       </p>
                       <div className="flex gap-2 text-xs text-muted-foreground">
                         <span>Downloads: {tool.downloads}</span>

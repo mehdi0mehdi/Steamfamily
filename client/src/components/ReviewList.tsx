@@ -22,9 +22,9 @@ export function ReviewList({ reviews }: ReviewListProps) {
         <div key={review.id} className="border-b border-border pb-6 last:border-b-0" data-testid={`review-${review.id}`}>
           <div className="flex items-start gap-4">
             <Avatar>
-              <AvatarImage src={review.user.avatarUrl || undefined} />
+              <AvatarImage src={review.user.avatar_url || undefined} />
               <AvatarFallback>
-                {(review.user.displayName || review.user.email || 'U')[0].toUpperCase()}
+                {(review.user.display_name || review.user.email || 'U')[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
             
@@ -32,7 +32,7 @@ export function ReviewList({ reviews }: ReviewListProps) {
               <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
                 <div>
                   <p className="font-medium" data-testid="text-reviewer-name">
-                    {review.user.displayName || review.user.email}
+                    {review.user.display_name || review.user.email}
                   </p>
                   <div className="flex items-center gap-2">
                     <div className="flex gap-0.5">

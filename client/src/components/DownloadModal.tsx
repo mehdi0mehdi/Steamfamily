@@ -44,26 +44,26 @@ export function DownloadModal({ open, onOpenChange, tool, downloadType, onConfir
               Confirm Download ({downloadType === 'primary' ? 'Primary' : 'Mirror'})
             </Button>
             
-            {tool.donateUrl && (
+            {tool.donate_url && (
               <Button 
                 variant="secondary" 
                 className="w-full gap-2"
                 asChild
               >
-                <a href={tool.donateUrl} target="_blank" rel="noopener noreferrer">
+                <a href={tool.donate_url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
                   Support Creator
                 </a>
               </Button>
             )}
             
-            {tool.telegramUrl && (
+            {tool.telegram_url && (
               <Button 
                 variant="outline" 
                 className="w-full gap-2"
                 asChild
               >
-                <a href={tool.telegramUrl} target="_blank" rel="noopener noreferrer">
+                <a href={tool.telegram_url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
                   Join Telegram Channel
                 </a>

@@ -75,22 +75,60 @@ export const insertDownloadLogSchema = createInsertSchema(downloadsLog).omit({
   createdAt: true,
 });
 
-// Types
-export type Profile = typeof profiles.$inferSelect;
+// Supabase returns data in snake_case, so we define types that match the actual API responses
+export type Profile = {
+  id: string;
+  email: string;
+  is_admin: boolean;
+  display_name: string | null;
+  avatar_url: string | null;
+  created_at: string;
+};
+
+export type Tool = {
+  id: string;
+  slug: string;
+  title: string;
+  short_description: string;
+  full_description: string;
+  images: string[];
+  tags: string[];
+  download_url: string;
+  mirror_url: string | null;
+  donate_url: string | null;
+  telegram_url: string | null;
+  version: string;
+  downloads: number;
+  visible: boolean;
+  created_at: string;
+};
+
+export type Review = {
+  id: string;
+  tool_id: string;
+  user_id: string;
+  rating: number;
+  body: string;
+  created_at: string;
+};
+
+export type DownloadLog = {
+  id: string;
+  tool_id: string;
+  user_id: string | null;
+  ip_hash: string | null;
+  created_at: string;
+};
+
+// Drizzle insert types (still use the Zod schemas for validation)
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
-
-export type Tool = typeof tools.$inferSelect;
 export type InsertTool = z.infer<typeof insertToolSchema>;
-
-export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
-
-export type DownloadLog = typeof downloadsLog.$inferSelect;
 export type InsertDownloadLog = z.infer<typeof insertDownloadLogSchema>;
 
 // Review with user info for display
 export type ReviewWithUser = Review & {
-  user: Pick<Profile, 'displayName' | 'avatarUrl' | 'email'>;
+  user: Pick<Profile, 'display_name' | 'avatar_url' | 'email'>;
 };
 
 // Tool with stats for display

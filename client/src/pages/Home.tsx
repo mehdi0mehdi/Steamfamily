@@ -44,7 +44,7 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-20 px-4 border-b border-border">
         <div className="container mx-auto max-w-4xl text-center">
@@ -149,7 +149,7 @@ export default function Home() {
                     <CardContent className="pt-4">
                       <h3 className="text-xl font-semibold mb-2">{tool.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                        {tool.shortDescription}
+                        {tool.short_description}
                       </p>
                       <div className="flex flex-wrap gap-2 mb-3">
                         {tool.tags && tool.tags.slice(0, 3).map((tag, idx) => (

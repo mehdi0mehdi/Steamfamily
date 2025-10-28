@@ -7,7 +7,7 @@ export function Header() {
   const { user, profile, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
+    <header className="sticky top-0 z-50 w-full border-b border-sidebar-border bg-sidebar backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 hover-elevate active-elevate-2 px-4 py-2 rounded-md transition-all" data-testid="link-home">
           <span className="text-xl font-bold">
@@ -18,7 +18,7 @@ export function Header() {
         <nav className="flex items-center gap-2">
           {user ? (
             <>
-              {profile?.isAdmin && (
+              {profile?.is_admin && (
                 <Link href="/admin">
                   <Button 
                     variant="ghost" 
@@ -32,7 +32,7 @@ export function Header() {
                 </Link>
               )}
               <span className="text-sm text-muted-foreground mr-2" data-testid="text-user-email">
-                {profile?.displayName || user.email}
+                {profile?.display_name || user.email}
               </span>
               <Button 
                 variant="ghost" 

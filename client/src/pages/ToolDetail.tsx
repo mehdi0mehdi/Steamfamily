@@ -33,7 +33,7 @@ export default function ToolDetail() {
         .single();
 
       if (error) throw error;
-      return data;
+      return data as Tool;
     },
   });
 
@@ -52,10 +52,7 @@ export default function ToolDetail() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data.map(r => ({
-        ...r,
-        user: r.user as any,
-      }));
+      return data as ReviewWithUser[];
     },
     enabled: !!tool?.id,
   });
@@ -122,7 +119,7 @@ export default function ToolDetail() {
     
     trackDownloadMutation.mutate(downloadType);
     
-    const url = downloadType === 'primary' ? tool.downloadUrl : tool.mirrorUrl;
+    const url = downloadType === 'primary' ? tool.download_url : tool.mirror_url;
     if (url) {
       window.open(url, '_blank');
     }
@@ -136,7 +133,7 @@ export default function ToolDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" data-testid="loader-tool-detail" />
       </div>
     );
@@ -144,7 +141,7 @@ export default function ToolDetail() {
 
   if (!tool) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4" data-testid="text-not-found">Tool Not Found</h1>
           <Link href="/">
@@ -156,7 +153,7 @@ export default function ToolDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-7xl px-4 py-8">
         {/* Breadcrumb */}
         <Link href="/">
@@ -182,7 +179,7 @@ export default function ToolDetail() {
                     <CardTitle className="text-3xl mb-2 break-words" data-testid="text-tool-title">
                       {tool.title}
                     </CardTitle>
-                    <p className="text-muted-foreground break-words" data-testid="text-short-description">{tool.shortDescription}</p>
+                    <p className="text-muted-foreground break-words" data-testid="text-short-description">{tool.short_description}</p>
                   </div>
                   <Badge variant="outline" className="whitespace-nowrap" data-testid="badge-version">v{tool.version}</Badge>
                 </div>
@@ -200,7 +197,7 @@ export default function ToolDetail() {
                 
                 <div 
                   className="prose prose-invert max-w-none break-words"
-                  dangerouslySetInnerHTML={{ __html: tool.fullDescription }}
+                  dangerouslySetInnerHTML={{ __html: tool.full_description }}
                   data-testid="text-full-description"
                 />
               </CardContent>
@@ -264,7 +261,7 @@ export default function ToolDetail() {
                   Download
                 </Button>
 
-                {tool.mirrorUrl && (
+                {tool.mirror_url && (
                   <Button 
                     variant="outline" 
                     className="w-full gap-2"
@@ -279,26 +276,26 @@ export default function ToolDetail() {
                 <Separator />
 
                 <div className="space-y-3">
-                  {tool.donateUrl && (
+                  {tool.donate_url && (
                     <Button 
                       variant="secondary" 
                       className="w-full gap-2"
                       asChild
                     >
-                      <a href={tool.donateUrl} target="_blank" rel="noopener noreferrer" data-testid="button-donate">
+                      <a href={tool.donate_url} target="_blank" rel="noopener noreferrer" data-testid="button-donate">
                         <ExternalLink className="h-4 w-4" />
                         Support Creator
                       </a>
                     </Button>
                   )}
 
-                  {tool.telegramUrl && (
+                  {tool.telegram_url && (
                     <Button 
                       variant="secondary" 
                       className="w-full gap-2"
                       asChild
                     >
-                      <a href={tool.telegramUrl} target="_blank" rel="noopener noreferrer" data-testid="button-telegram">
+                      <a href={tool.telegram_url} target="_blank" rel="noopener noreferrer" data-testid="button-telegram">
                         <ExternalLink className="h-4 w-4" />
                         Telegram Channel
                       </a>
