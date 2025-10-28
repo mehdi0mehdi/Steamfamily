@@ -20,7 +20,7 @@ export default function Register() {
     setLoading(true);
     try {
       await signUp(email, password, displayName);
-  setLocation(`${import.meta.env.BASE_URL}`);
+      setLocation('/');
     } catch (error) {
       console.error('Registration error:', error);
     } finally {
@@ -84,7 +84,7 @@ export default function Register() {
             </Button>
             <p className="text-sm text-muted-foreground text-center">
               Already have an account?{' '}
-              <Link href={`${import.meta.env.BASE_URL}login`} className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline">
                 Login
               </Link>
             </p>
