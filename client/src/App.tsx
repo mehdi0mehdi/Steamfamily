@@ -1,4 +1,26 @@
-import { Switch, Route } from "wouter";
+import React from "react";
+import { Switch, Route, Router as WouterRouter } from "wouter";
+
+// Simple hash location hook so the app uses #/ routes and GitHub Pages won't 404 on refresh.
+function useHashLocation() {
+  const getHash = () => (typeof window !== 'undefined' ? window.location.hash.replace(/^#/, '') || '/' : '/');
+  const [loc, setLoc] = (React as any).useState(getHash());
+
+  React.useEffect(() => {
+    const onHash = () => setLoc(getHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  const navigate = (to: string) => {
+    if (typeof window !== 'undefined') {
+      window.location.hash = to;
+      setLoc(to);
+    }
+  };
+
+  return [loc, navigate];
+}
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,7 +36,7 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
 
-function Router() {
+function AppRoutes() {
   return (
     <>
       <Header />
@@ -79,7 +101,9 @@ function App() {
       <TooltipProvider>
         <AuthProvider>
           <Toaster />
-          <Router />
+          <WouterRouter hook={useHashLocation as any}>
+            <AppRoutes />
+          </WouterRouter>
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
