@@ -38,6 +38,9 @@ jobs:
           if [ -n "${VITE_BASE}" ]; then echo "VITE_BASE=${VITE_BASE}" >> client/.env; fi
 
       - name: Check required secrets are present
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           if [ -z "${VITE_SUPABASE_URL}" ]; then echo "ERROR: VITE_SUPABASE_URL is not set"; exit 1; fi
           if [ -z "${VITE_SUPABASE_ANON_KEY}" ]; then echo "ERROR: VITE_SUPABASE_ANON_KEY is not set"; exit 1; fi
