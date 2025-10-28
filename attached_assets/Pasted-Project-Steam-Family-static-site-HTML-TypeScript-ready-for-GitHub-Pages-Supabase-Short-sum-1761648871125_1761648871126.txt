@@ -1,0 +1,292 @@
+Project: Steam Family — static site (HTML + TypeScript) ready for GitHub Pages + Supabase
+
+Short summary: Build a static, mobile-first website called Steam Family to share 3rd-party tools. The site must be HTML-based (served by GitHub Pages) and use TypeScript for client logic. TypeScript must be compiled to plain JavaScript before publishing. The delivered repository must be directly deployable to GitHub Pages (root or /docs) and include full setup instructions for Supabase (including SQL migrations and RLS). The site must persist real data (reviews, ratings, download counts) in Supabase — do not seed or fake reviews/downloads.
+
+Important testing note (must-read — NEW)
+
+Before wiring the site to the customer's Supabase project:
+
+• The implementer must test everything against their own local or temporary Supabase/test database (or a local PostgreSQL + Supabase-compatible emulator).
+
+• Only after the implementer verifies everything works end-to-end on their test DB should they connect the site to the customer's Supabase instance.
+
+• Document the testing steps clearly in the README and show exactly how to switch the site from the test DB to the final Supabase project (URL + anon key substitution).
+
+• Include explicit commands and config file examples for switching environments.
+
+Core functional requirements
+
+1) Pages & routing
+
+• Root index.html is the main entry page (must be present at site root). Tool pages must live in directory tool/<slug>/index.html so URLs look like /tool/<slug>/.
+
+• Pages: Home (featured tools + categories), Tool detail page (one per tool), Privacy, Terms.
+
+• Mobile-first, responsive layout.
+
+2) Tool page content & UI
+
+• Each tool page includes: title, short + full description, screenshots (carousel if multiple), tags, version.
+
+• Buttons: 
+
+• Download (primary)
+
+• Mirror (secondary)
+
+• Donate (opens in new tab)
+
+• Telegram Channel (opens in new tab)
+
+• Clicking Download or Mirror must: 
+
+• increment the tool's download count in Supabase (persistent),
+
+• create an optional row in downloads_log with IP/hash, user_id nullable, timestamp.
+
+• When user clicks a download or donate/telegram CTA, show a modal/popup with the same CTAs and an explanation. Modal should contain Donate + Telegram CTAs as well.
+
+• Display real download counts on the tool page (read from Supabase).
+
+• Ensure the tool page design is correct: text/content must be inside card/container and never overflow (verify desktop + mobile). Fix CSS wrapping/widths so nothing spills outside container.
+
+3) Admin panel (client-side) — add/edit/remove tools without touching code
+
+• Client-side admin UI must be visible only to admin users. 
+
+• Admin detection: rely on is_admin flag on user profile or a configured admin list.
+
+• Implementer must include recommended Supabase RLS/policies so only actual admin accounts can perform admin writes.
+
+• Admin form fields: 
+
+• Tool name, short description, full description (HTML/Markdown allowed), image URL(s), tags, Download URL(s) primary + mirror, Telegram URL (optional), Donate URL (optional), Version, visibility toggle, initial download count (optional).
+
+• Adding or editing a tool via admin UI writes directly to Supabase; changes appear immediately on site (no repo code edit).
+
+• README must explain how to add first admin (via Supabase UI or SQL) and how to manage admins.
+
+Include this explicit instruction in code comments/README:
+// Admin panel visible only to admins — implementer: ensure Supabase RLS/policies protect admin writes.
+
+4) Auth, reviews, and ratings
+
+• Login/Register using Supabase Auth (email/password; OAuth optional).
+
+• Only authenticated users can post reviews or ratings.
+
+• Reviews: star rating 1–5 + text body. Reviews must be written/persisted by real users (no fake seeded reviews).
+
+• Display review list and average rating on each tool page.
+
+• Implement client-side & server-side filtering: 
+
+• Reject reviews containing URLs (regex /(https?:\/\/|www\.)/i) and show friendly error message.
+
+• Configurable badWords array (in code/config/DB). Replace matched bad words with *** before saving/display.
+
+• Perform the same checks server-side (Supabase policies or SQL) so users cannot bypass filters.
+
+• Reviews must appear immediately after posting for the authenticated user (real-time refresh or refresh-on-success).
+
+Working reviews requirement (explicit): reviews must be real and persisted to DB. Do not seed or fake review data.
+
+5) Bad content & link filtering
+
+• Client regex to detect URLs: /(https?:\/\/|www\.)/i — block on client and server.
+
+• Configurable bad-words list (maintainable in code or DB). Replace matched words in stored review text with ***.
+
+• Enforce checks in DB policies or server-side SQL (Supabase policies) to prevent bypass.
+
+6) UX / Design details
+
+• Clean, dark-ish Steam-like theme. Use CSS variables for colors so owner can change theme easily.
+
+• No emojis in UI. Use icons from a CDN (Font Awesome or Lucide) via CDN links.
+
+• Header: Steam Family text left, Login/Register icons top-right.
+
+• Animations: page transitions & modal animations (CSS transitions or small library like AOS).
+
+• Accessible HTML: ARIA attributes, alt tags on images.
+
+• Use a light, performant CSS approach — Tailwind optional or plain CSS with responsive grid.
+
+• Tool cards: ensure spacing/wrapping so text never overflows outside container.
+
+7) Data model & Supabase schema (provide SQL file + migration)
+
+Provide SQL to create the tables and minimal RLS policies:
+
+Tables:
+
+• profiles (user_id [uuid], email, is_admin boolean, display_name, avatar_url, created_at)
+
+• tools (id serial or uuid, slug text unique, title, description text, images text[] or jsonb, donate_url text, telegram_url text, downloads integer default 0, visible boolean default true, version text, created_at)
+
+• reviews (id, tool_id references tools, user_id references profiles, rating int, body text, created_at timestamptz)
+
+• downloads_log (id, tool_id, user_id nullable, ip_hash text, created_at timestamptz)
+
+• Any necessary indices.
+
+RLS & policies (example):
+
+• Allow insert on reviews only for authenticated users; include server-side check to reject URLs/bad words.
+
+• Allow update/insert on tools only for admin users (profile is_admin), with RLS policy example included.
+
+• Allow insert into downloads_log for authenticated or anonymous (but ensure no escalation).
+
+Include example SQL migration file and snippets for the RLS policies and example SQL to add the first admin.
+
+8) Security & keys
+
+• Never put Supabase service_role key in the repo.
+
+• Show how to store Supabase anon/public key and project URL in a small config.js or .env (explain how to replace at build or provide config.example.js).
+
+• Explain where to put keys and how to switch between test and production keys. Include sample config.sample.js or env instructions.
+
+9) Build & GitHub Pages compatibility
+
+• Final site must be static after build (all client code compiled to JS).
+
+• Provide a build script; recommended approaches: 
+
+• Minimal: tsc -> compile src/*.ts to dist/*.js, copy index.html, CSS, static files to /docs (or root) for GitHub Pages.
+
+• Or use Vite with npm run build and provide prepare-gh script to copy dist/ → docs/.
+
+• Required package.json scripts: 
+
+• "dev" (optional, for local dev preview)
+
+• "build" — compiles TS to JS and produces final static files
+
+• "prepare-gh" (optional) — copies build output to /docs for GitHub Pages
+
+• Provide exact commands for user to run: 
+
+• npm install
+
+• npm run build
+
+• git add . && git commit -m "prepare for github pages" && git push
+
+• Steps to enable GitHub Pages from main and set to root or docs/.
+
+• Make sure runtime client code is plain JS in the build output.
+
+10) Developer friendliness & tutorials
+
+• Add inline comments in key code files explaining: 
+
+• Where to change tool content (if using tools.json fallback)
+
+• How to change theme colors (CSS variables)
+
+• Where to drop Supabase keys (config)
+
+• How admin form works (and where to adjust)
+
+• Provide full README.md with: 
+
+• Step-by-step Supabase setup, run provided SQL, configure RLS/policies, get anon key.
+
+• How to run and build locally.
+
+• How to deploy to GitHub Pages (using /docs or gh-pages).
+
+• How to switch from test DB to final Supabase project (explicit commands and config file edits).
+
+• How to add the first admin via Supabase UI or SQL.
+
+11) Extra features & constraints
+
+• Use lightweight libraries only — prefer CDN for icons and small animation libs.
+
+• Keep bundle small.
+
+• Optional downloads_log for analytics.
+
+• Admin alternative: document how to add/edit tools via Supabase UI (if preferred) as an alternative to the admin panel.
+
+• Ensure tool pages are directories with index.html (so URLs look like /tool/tool-slug/).
+
+Deliverables (explicit)
+
+• Full repo structure & code: 
+
+• index.html (root)
+
+• Tool pages tool/<slug>/index.html
+
+• src/ TypeScript
+
+• dist/ or docs/ compiled JavaScript & final static files
+
+• styles/ CSS
+
+• images and assets
+
+• README.md
+
+• sql/ with migrations & RLS policy examples
+
+• package.json with dev, build, and prepare-gh scripts.
+
+• README.md with step-by-step Supabase and GitHub Pages setup, and explicit testing instructions to use a test DB first.
+
+• Inline comments in key files showing how to edit tools and change theme colors.
+
+• SQL file to create tools, reviews, downloads_log (and profiles) and example RLS policies for auth & admin protection.
+
+• Example config.sample.js showing where to put Supabase anon key and URL (do not commit real keys).
+
+Acceptance checks (what you must demonstrate)
+
+• Admin panel must be hidden from non-admin accounts and allow adding/editing/removing tools that appear immediately on the site.
+
+• Reviews posted by authenticated users must be persisted to Supabase and show instantly; cannot post links (client + server checks).
+
+• Download counts increment in Supabase on button click and are displayed; a row is added to downloads_log.
+
+• The implementer must show evidence they tested the site against their own test DB before connecting to final Supabase (document in README with concrete steps).
+
+• index.html must be the root entry page. All TS must be compiled in build step and final repo should contain static JS files (no .ts required in final docs/root).
+
+• Tool page layout must be verified: no overflow or content drawn outside of cards/containers (desktop and mobile screenshots or explicit CSS tests in README are helpful).
+
+Required lines to include in code comments / README (copy these verbatim)
+
+• // TypeScript must be compiled to JavaScript before publishing to GitHub Pages. Use 'npx tsc' or 'npm run build'.
+
+• // Supabase anon key and URL are public client values — put them in config.js or .env and do not commit service_role keys.
+
+• // Admin panel visible only to admins — implementer: ensure Supabase RLS/policies protect admin writes.
+
+• // Linkless reviews: client uses regex /(https?:\\/\\/|www\\.)/i to reject URLs. Server policies also reject them.
+
+• // Configurable badWords array in code/DB — sanitize before saving (replace with '***').
+
+• // Tool pages must be directories with index.html so URLs are /tool/<slug>/.
+
+Design & tone
+
+• Clean, dark steam-like theme; accessible; minimal; fast.
+
+• No emojis; use icon CDN.
+
+• Ensure responsive grid for tool cards and a modal for CTAs.
+
+Notes for implementer (small checklist)
+
+• Test on a private/test Supabase instance first — do not connect customer DB until tests pass.
+
+• Provide SQL for creating first admin and examples of how to manage admins.
+
+• Keep final bundle small and avoid heavy libraries.
+
+• Provide documented step-by-step deploy instructions for GitHub Pages.
